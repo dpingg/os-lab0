@@ -10,8 +10,7 @@ static int letter_code[] = {
 /* 对应键按下的标志位 */
 static bool letter_pressed[26];
 
-void
-press_key(int scan_code) {
+void press_key(int scan_code) {
 	int i;
 	for (i = 0; i < 26; i ++) {
 		if (letter_code[i] == scan_code) {
@@ -20,14 +19,12 @@ press_key(int scan_code) {
 	}
 }
 
-void
-release_key(int index) {
+void release_key(int index) {
 	assert(0 <= index && index < 26);
 	letter_pressed[index] = FALSE;
 }
 
-bool
-query_key(int index) {
+bool query_key(int index) {
 	assert(0 <= index && index < 26);
 	return letter_pressed[index];
 }
@@ -39,8 +36,7 @@ int last_key_code(void) {
 	return key_code;
 }
 
-void
-keyboard_event(int code) {
+void keyboard_event(int code) {
 	key_code = code;
 	press_key(code);
 }

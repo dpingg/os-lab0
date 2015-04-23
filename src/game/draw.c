@@ -8,8 +8,7 @@
  * draw_pixel或draw_string绘制的内容将保存在缓冲区内(暂时不会显示在屏幕上)，调用
  * display_buffer后才会显示。
 */
-void
-redraw_screen() {
+void redraw_screen() {
 	fly_t it;
 	const char *hit, *miss;
 	

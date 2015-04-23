@@ -3,8 +3,7 @@
 #include "device/video.h"
 #include "string.h"
 
-static void
-append(char **p, const char *str) {
+static void append(char **p, const char *str) {
 	while (*str) {
 		*((*p) ++) = *str ++;
 	}
@@ -12,8 +11,7 @@ append(char **p, const char *str) {
 
 /* 将文件名和assert fail的行号显示在屏幕上 */
 #define BLUE_SCREEN_TEXT "Assertion failed: "
-static void
-blue_screen(const char *file, int line) {
+static void blue_screen(const char *file, int line) {
 	static char buf[256] = BLUE_SCREEN_TEXT;
 	char *p = buf + sizeof(BLUE_SCREEN_TEXT) - 1;
 
@@ -27,8 +25,7 @@ blue_screen(const char *file, int line) {
 	display_buffer();
 }
 
-int
-abort(const char *fname, int line) {
+int abort(const char *fname, int line) {
 	/* 当程序遇到不可恢复的错误时，首先将外部中断关闭以防其他错误发生，
      * 然后显示出错信息后，等待下一个中断到来(实际永远等不到)。*/
 	disable_interrupt();

@@ -10,24 +10,20 @@ LINKLIST_IMPL(fly, 10000)
 static fly_t head = NULL;
 static int hit = 0, miss = 0;
 
-int
-get_hit(void) {
+int get_hit(void) {
 	return hit;
 }
 
-int
-get_miss(void) {
+int get_miss(void) {
 	return miss;
 }
 
-fly_t
-characters(void) {
+fly_t characters(void) {
 	return head;
 }
 
 /* 在屏幕上创建一个新的字母 */
-void
-create_new_letter(void) {
+void create_new_letter(void) {
 	if (head == NULL) {
 		head = fly_new(); /* 当前没有任何字母，创建新链表 */
 	} else {
@@ -44,8 +40,7 @@ create_new_letter(void) {
 }
 
 /* 逻辑时钟前进1单位 */
-void
-update_letter_pos(void) {
+void update_letter_pos(void) {
 	fly_t it;
 	for (it = head; it != NULL; ) {
 		fly_t next = it->_next;
@@ -62,8 +57,7 @@ update_letter_pos(void) {
 }
 
 /* 更新按键 */
-bool
-update_keypress(void) {
+bool update_keypress(void) {
 	fly_t it, target = NULL;
 	float min = -100;
 

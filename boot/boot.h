@@ -30,19 +30,16 @@ struct ProgramHeader {
 };
 
 /* I/O处理函数 */
-static inline char
-in_byte(short port) {
+static inline char in_byte(short port) {
 	char data;
 	asm volatile("in %1,%0" : "=a" (data) : "d" (port));
 	return data;
 }
-static inline int 
-in_long(short port) {
+static inline int in_long(short port) {
 	int data;
 	asm volatile("in %1, %0" : "=a" (data) : "d" (port));
 	return data;
 }
-static inline void
-out_byte(short port, char data) {
+static inline void out_byte(short port, char data) {
 	asm volatile("out %0,%1" : : "a" (data), "d" (port));
 }

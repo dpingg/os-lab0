@@ -12,8 +12,7 @@
 
 void readseg(unsigned char *, int, int);
 
-void
-bootmain(void) {
+void bootmain(void) {
 	struct ELFHeader *elf;
 	struct ProgramHeader *ph, *eph;
 	unsigned char* pa, *i;
@@ -29,6 +28,7 @@ bootmain(void) {
 	ph = (struct ProgramHeader*)((char *)elf + elf->phoff);
 	eph = ph + elf->phnum;
 	for(; ph < eph; ph ++) {
+		/* ************************************* */
 		pa = (unsigned char*)ph->paddr; /* 获取物理地址 */
 		readseg(pa, ph->filesz, ph->off); /* 读入数据 */
 		for (i = pa + ph->filesz; i < pa + ph->memsz; *i ++ = 0);
@@ -37,14 +37,33 @@ bootmain(void) {
 	((void(*)(void))elf->entry)();
 }
 
-void
-waitdisk(void) {
-	while((in_byte(0x1F7) & 0xC0) != 0x40); /* 等待磁盘完毕 */
+
+/*
+#define HD_PORT_DATA            0x1f0
+#define HD_PORT_ERROR           0x1f1
+#define HD_PORT_SECT_COUNT      0x1f2
+#define HD_PORT_SECT_NUM        0x1f3
+#define HD_PORT_CYL_LOW         0x1f4
+#define HD_PORT_CYL_HIGH        0x1f5
+#define HD_PORT_DRV_HEAD        0x1f6
+#define HD_PORT_STATUS          0x1f7
+#define HD_PORT_COMMAND         0x1f7
+看起来很恐怖，但是它被组织的很清晰，我们从0x1F0读取数据，
+如果有任何错误，我们从0x1F1中获取错误状态，通过0x1F2和0x1F3设置扇区数量，
+通过0x1F4和0x1F5设置柱面数，剩下的0x1F6设置磁头数， 
+我们通过端口0x1F7读取磁盘状态，我们通过端口0x1F7发送读写命令。
+
+#define HD_READ         0x20
+#define HD_WRITE        0x30
+*/
+
+
+void waitdisk(void) {
+	while((in_byte(0x1F7) & 0xC0) != 0x40); /* 等待磁盘完毕 --等待硬盘状态，直到可以写或读为止，*/
 }
 
 /* 读磁盘的一个扇区 */
-void
-readsect(void *dst, int offset) {
+void readsect(void *dst, int offset) {
 	int i;
 	waitdisk();
 	out_byte(0x1F2, 1);
@@ -61,8 +80,7 @@ readsect(void *dst, int offset) {
 }
 
 /* 将位于磁盘offset位置的count字节数据读入物理地址pa */
-void
-readseg(unsigned char *pa, int count, int offset) {
+void readseg(unsigned char *pa, int count, int offset) {
 	unsigned char *epa;
 	epa = pa + count;
 	pa -= offset % SECTSIZE;

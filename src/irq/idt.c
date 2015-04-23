@@ -7,8 +7,7 @@
 struct GateDescriptor idt[NR_IRQ];
 
 /* 初始化一个中断门(interrupt gate) */
-static void
-set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
+static void set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
 	ptr->offset_15_0 = offset & 0xFFFF;
 	ptr->segment = selector << 3;
 	ptr->pad0 = 0;
@@ -20,8 +19,7 @@ set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_
 }
 
 /* 初始化一个陷阱门(trap gate) */
-static void
-set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
+static void set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
 	ptr->offset_15_0 = offset & 0xFFFF;
 	ptr->segment = selector << 3;
 	ptr->pad0 = 0;
@@ -34,6 +32,7 @@ set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_
 
 /* 这些函数是汇编代码 */
 void irq0();
+void irq1();
 void vec0();
 void vec1();
 void vec2();
@@ -51,6 +50,7 @@ void vec13();
 
 void irq_empty();
 
+/* 中断处理相关函数 */
 void init_idt() {
 	int i;
 	/* 为了防止系统异常终止，所有irq都有处理函数(irq_empty)。 */
@@ -76,6 +76,7 @@ void init_idt() {
 
 	/* 设置外部中断的处理 */
 	set_intr(idt + 32, SEG_KERNEL_CODE, (uint32_t)irq0, DPL_KERNEL);
+	set_intr(idt + 33, SEG_KERNEL_CODE, (uint32_t)irq1, DPL_KERNEL);
 
 	/* 写入IDT */
 	save_idt(idt, sizeof(idt));

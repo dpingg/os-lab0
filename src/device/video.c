@@ -25,8 +25,7 @@ static uint8_t vbuf[SCR_SIZE];
 static uint8_t vref[SCR_SIZE];
 #endif
 
-void
-prepare_buffer(void) {
+void prepare_buffer(void) {
 #ifdef PARTIAL_UPDATE
 	memcpy(vref, vbuf, SCR_SIZE);
 #endif
@@ -34,8 +33,7 @@ prepare_buffer(void) {
 	memset(vmem, 0, SCR_SIZE);
 }
 
-void
-display_buffer(void) {
+void display_buffer(void) {
 #ifdef PARTIAL_UPDATE
 	int i;
 #ifdef INTERLACE
@@ -63,8 +61,7 @@ display_buffer(void) {
 #endif
 }
 
-static inline void
-draw_character(char ch, int x, int y, int color) {
+static inline void draw_character(char ch, int x, int y, int color) {
 	int i, j;
 	assert((ch & 0x80) == 0);
 	char *p = font8x8_basic[(int)ch];
@@ -74,8 +71,7 @@ draw_character(char ch, int x, int y, int color) {
 				draw_pixel(x + i, y + j, color);
 }
 
-void
-draw_string(const char *str, int x, int y, int color) {
+void draw_string(const char *str, int x, int y, int color) {
 	while (*str) {
 		draw_character(*str ++, x, y, color);
 		if (y + 8 >= SCR_WIDTH) {

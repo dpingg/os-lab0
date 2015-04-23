@@ -6,8 +6,7 @@
 #define TIMER_PORT 0x40
 #define FREQ_8253 1193182
 
-void
-init_timer(void) {
+void init_timer(void) {
 	int counter = FREQ_8253 / HZ;
 	assert(counter < 65536);
 	out_byte(TIMER_PORT + 3, 0x34);

@@ -9,18 +9,16 @@
 
 volatile int tick = 0;
 
-void
-timer_event(void) {
+void timer_event(void) {
 	tick ++;
 }
 
 static int real_fps;
-void
-set_fps(int value) {
+
+void set_fps(int value) {
 	real_fps = value;
 }
-int
-get_fps() {
+int get_fps() {
 	return real_fps;
 }
 
@@ -39,19 +37,21 @@ get_fps() {
  * -DTOOSLOW，此时将会采用隔行扫描的方式更新屏幕(可能会降低显示效果)。
  * 这些机制的实现在device/video.c中。
  * */
-void
-main_loop(void) {
+void main_loop(void) {
 	int now = 0, target;
 	int num_draw = 0;
 	bool redraw;
 
 	while (TRUE) {
+
 		wait_for_interrupt();
 		disable_interrupt();
 		if (now == tick) {
 			enable_interrupt();
 			continue;
 		}
+
+
 		assert(now < tick);
 		target = tick; /* now总是小于tick，因此我们需要“追赶”当前的时间 */
 		enable_interrupt();
@@ -81,13 +81,19 @@ main_loop(void) {
 			}
 			/* 更新fps统计信息 */
 			if (now % (HZ / 2) == 0) {
+				printk("tick = %d\n",tick);
+				printk("now = %d\n", now);
+				printk("num_draw = %d\n", num_draw);
 				int now_fps = num_draw * 2 + 1;
+				printk("now_fps = %d\n", now_fps);
 				if (now_fps > FPS) now_fps = FPS;
 				set_fps(now_fps);
 				num_draw = 0;
+
 			}
 			now ++;
 		}
+		printk("num_draw = %d\n", num_draw);
 
 		if (redraw) { /* 当需要重新绘图时重绘 */
 			num_draw ++;
